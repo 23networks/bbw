@@ -1,0 +1,15 @@
+ZABBIX_SENDER=/usr/bin/zabbix_sender
+ZABBIX_CONF=/etc/zabbix/zabbix_agentd.conf
+
+function zsend {
+  V=$2; [ -z "$2" ] && V=0
+  $ZABBIX_SENDER -c $ZABBIX_CONF -k $1 -o $V >/dev/null
+}
+
+zsend bbackup.duration $(echo $stats|jq .archive.duration)
+zsend bbackup.archiveutilization $(echo $stats|jq .archive.limits.max_archive_size)
+zsend bbackup.nfiles $(echo $stats|jq .archive.stats.nfiles)
+zsend bbackup.originalsize $(echo $stats|jq .archive.stats.original_size)
+zsend bbackup.compressedsize $(echo $stats|jq .archive.stats.compressed_size)
+zsend bbackup.deduplicatedsize $(echo $stats|jq .archive.stats.deduplicated_size)
+zsend bbackup.rc $retcode

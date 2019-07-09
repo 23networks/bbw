@@ -1,0 +1,1 @@
+export BORG_SERVER="borg0.example.org"

@@ -1,0 +1,32 @@
+# 
+# This script can't be executed!
+# Source it with: source start_shell
+#
+
+source /opt/bbackup/bbackup.d/80-borg_server
+source /opt/bbackup/bbackup.d/90-passphrase
+
+cat << EOF
+Available commands:
+list_backups = borg list bbackup@\${BORG_SERVER}:.
+list_backup_files = borg list bbackup@\${BORG_SERVER}:.::
+extract_backup = borg extract bbackup@\${BORG_SERVER}:.::
+(Only for repo initialisation:
+    init_bbrepo = borg init -e repokey-blake2 bbackup@${BORG_SERVER}:. )
+
+Example:
+Restore file or directory to current dir:
+extract_backup 2018-02-09_03:51:14 etc/passwd
+
+EOF
+
+alias list_backups="borg list bbackup@${BORG_SERVER}:."
+alias init_bbrepo="borg init -e repokey-blake2 bbackup@${BORG_SERVER}:."
+function extract_backup() {
+  borg extract bbackup@${BORG_SERVER}:.::$1 $2
+}
+function list_backup_files() {
+  borg list bbackup@${BORG_SERVER}:.::$1 $2
+}
+
+PS1="(Borg)$PS1"

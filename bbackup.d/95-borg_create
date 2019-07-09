@@ -1,0 +1,33 @@
+export BORG_RSH='ssh -oStrictHostKeyChecking=no'
+stats=$(borg create -v --json --compression auto,lz4 bbackup@${BORG_SERVER}:.::{now:%Y-%m-%d_%H:%M:%S} / \
+  --exclude-caches \
+  --exclude '/tmp/' \
+  --exclude '*/tmp/' \
+  --exclude '*/temp/' \
+  --exclude '/nobackup/' \
+  --exclude /bacula-restores/ \
+  --exclude '/home/www/web*/phptmp/' \
+  --exclude '/var/www/vhosts/*/tmp/' \
+  --exclude '/swapfile*' \
+  --exclude '*/sess_*' \
+  --exclude '/var/lib/apache2/fcgid/sock/' \
+  --exclude '/old/' \
+  --exclude '/var/lib/ntp/proc' \
+  --exclude '/var/lib/named/proc' \
+  --exclude '/run/' \
+  --exclude '/var/lib/lxcfs/cgroup' \
+  --exclude '*/cgroup/' \
+  --exclude '*/proc/' \
+  --exclude '/proc/' \
+  --exclude '/sys/' \
+  --exclude '/dev/' \
+  --exclude '/run/' \
+  --exclude '/mnt/' \
+  --exclude '/var/spool/postfix/var/run/mysqld' \
+  --exclude '/lib/init/rw' \
+  --exclude '*.pyc' \
+)
+retcode=$?
+#stats=$(echo $stats|/usr/bin/jq -c .)
+stats=$(echo $stats|tr \\n \ )
+
